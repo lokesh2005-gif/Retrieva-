@@ -74,7 +74,7 @@ vectordb = get_vector_store(embeddings)
 @st.cache_resource
 def get_chat_model():
     return ChatGroq(
-        model="llama-3.3-70b-versatile",
+        model="groq/compound-mini",
         temperature=0.0,
         max_tokens=400,
         groq_api_key=groq_key,
