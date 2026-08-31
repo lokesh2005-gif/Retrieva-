@@ -21,11 +21,12 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 load_dotenv()
 
-groq_key = os.getenv("GROQ_API_KEY")
+# Resolve API key: Streamlit Cloud secrets take priority, fallback to .env for local dev
+groq_key = st.secrets.get("GROQ_API_KEY", None) or os.getenv("GROQ_API_KEY")
 if groq_key:
     os.environ["GROQ_API_KEY"] = groq_key
 else:
-    st.warning("GROQ_API_KEY not set. Add it to .env or export in the environment to enable LLM calls.")
+    st.warning("GROQ_API_KEY not set. Add it to Streamlit Cloud Secrets or your local .env file.")
 
 # The CHROMA_DB_IMPL setting was removed because it was deprecated and causing Chroma to fail.
 
@@ -73,9 +74,10 @@ vectordb = get_vector_store(embeddings)
 @st.cache_resource
 def get_chat_model():
     return ChatGroq(
-        model="groq/compound-mini",
+        model="llama-3.3-70b-versatile",
         temperature=0.0,
         max_tokens=400,
+        groq_api_key=groq_key,
     )
 
 
